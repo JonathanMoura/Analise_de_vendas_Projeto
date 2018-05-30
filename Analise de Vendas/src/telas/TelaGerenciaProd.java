@@ -60,6 +60,7 @@ public class TelaGerenciaProd extends JFrame {
 	public static TelaGerenciaProd instance;
 	JButton btnRemover;
 	JButton btnEditar; 
+	private JTextField textFieldQuantidade;
 	
 	public static TelaGerenciaProd getInstance() {
 		if (instance == null)
@@ -205,6 +206,11 @@ public class TelaGerenciaProd extends JFrame {
 		panel.add(separator_1);
 		
 		JComboBox comboBox = new JComboBox();
+		comboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
 		comboBox.setBounds(101, 349, 366, 21);
 		panel.add(comboBox);
 		
@@ -214,8 +220,36 @@ public class TelaGerenciaProd extends JFrame {
 		panel.add(lblVendedor);
 		
 		JButton btnDistribuir = new JButton("Distribuir");
+		btnDistribuir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int[] linhas = table.getSelectedRows();
+				if(linhas.length == 1){
+					if(!textFieldQuantidade.getText().equals("")){
+						if(comboBox.getSelectedIndex()!=-1){
+							
+						}else{
+							Popup.selectVendedor();
+						}		
+					}else{
+						Popup.quantProd();
+					}
+				}else{
+					Popup.select1Row();
+				}
+			}
+		});
 		btnDistribuir.setBounds(479, 348, 89, 23);
 		panel.add(btnDistribuir);
+		
+		JLabel lblQuantidade = new JLabel("Quantidade:");
+		lblQuantidade.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblQuantidade.setBounds(20, 396, 86, 21);
+		panel.add(lblQuantidade);
+		
+		textFieldQuantidade = new JTextField();
+		textFieldQuantidade.setColumns(10);
+		textFieldQuantidade.setBounds(101, 398, 102, 20);
+		panel.add(textFieldQuantidade);
 		btnEditar.setVisible(false);
 		
 		JLabel lblBuscaDeProduto = new JLabel("Gerenciamento de produto");

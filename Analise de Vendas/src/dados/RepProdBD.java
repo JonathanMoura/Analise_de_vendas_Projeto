@@ -24,8 +24,8 @@ public class RepProdBD extends RepositorioBD implements IRepositorioProduto{
 	private static final String INSERIR   = "INSERT INTO produto ";
 	private static final String PROCURAR  = "SELECT * FROM produto ";
 	private static final String REMOVER   = "DELETE FROM produto WHERE nome = ";
-	private static final String ATUALIZAR = "UPDATE produto SET nome = ?, descrição = ?, quantidade = ?, valor = ?, chave = ? WHERE nome = ?";
-	private static final String CAMPOS    = "(id, nome, descrição, quantidade, valor, chave) ";	
+	private static final String ATUALIZAR = "UPDATE produto SET nome = ?, descricao = ?, quantidade = ?, valor = ?, chave = ? WHERE nome = ?";
+	private static final String CAMPOS    = "(id, nome, descricao, quantidade, valor, chave) ";	
 	
 	public RepProdBD(){
 		super();
@@ -64,7 +64,7 @@ public class RepProdBD extends RepositorioBD implements IRepositorioProduto{
 			ResultSet rs = stm.executeQuery(comando);
 			if (rs.next()) {
 				Produto produto = new Produto(rs.getString("nome"),
-											  rs.getString("descrição"),
+											  rs.getString("descricao"),
 											  rs.getInt("quantidade"),
 											  rs.getDouble("valor"),
 											  rs.getString("chave"));
