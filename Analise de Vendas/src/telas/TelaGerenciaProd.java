@@ -56,11 +56,15 @@ public class TelaGerenciaProd extends JFrame {
 	private JTextField textFieldNome;
 	private JTable table;
 	private ModeloTabelaProduto modelo; 
-	JScrollPane scrollPane;
+	private JScrollPane scrollPane;
 	public static TelaGerenciaProd instance;
-	JButton btnRemover;
-	JButton btnEditar; 
+	private JButton btnRemover;
+	private JButton btnEditar;
+	private JComboBox comboBox;
 	private JTextField textFieldQuantidade;
+	private JLabel lblVendedor;
+	private JButton btnDistribuir;
+	private JLabel lblQuantidade;
 	
 	public static TelaGerenciaProd getInstance() {
 		if (instance == null)
@@ -72,6 +76,31 @@ public class TelaGerenciaProd extends JFrame {
 		textFieldNome.setText("");
 		if(table.getRowCount() > 0)
 			table.removeRowSelectionInterval(0, table.getRowCount() - 1);
+		if(comboBox.getItemCount()>0){
+			comboBox.removeAllItems();
+		}
+	}
+	
+	public void setVisibilidade(Boolean visivel){
+		if(visivel == true){
+			scrollPane.setVisible(true);
+			btnEditar.setVisible(true);
+			btnRemover.setVisible(true);
+			textFieldQuantidade.setVisible(true);
+			comboBox.setVisible(true);
+			lblVendedor.setVisible(true);
+			btnDistribuir.setVisible(true);
+			lblQuantidade.setVisible(true); 
+		}else{
+			scrollPane.setVisible(false);
+			btnEditar.setVisible(false);
+			btnRemover.setVisible(false);
+			textFieldQuantidade.setVisible(false);
+			comboBox.setVisible(false);
+			lblVendedor.setVisible(false);
+			btnDistribuir.setVisible(false);
+			lblQuantidade.setVisible(false); 
+		}
 	}
 		
 	public static void main(String[] args) {
@@ -126,14 +155,13 @@ public class TelaGerenciaProd extends JFrame {
 					ResultSet rs;
 					rs = Fachada.getInstance().listarProd();
 					ClasseAssistente.montarTabelaProduto(rs, modelo);
+					ClasseAssistente.montaComboBox(comboBox);
 				} else{
 					Produto produto;
 					produto = Fachada.getInstance().procurarProd(textFieldNome.getText());
-					ClasseAssistente.montarTabelaProduto(produto, modelo, table);
+					ClasseAssistente.montarTabelaProduto(produto, modelo);
 				}
-				scrollPane.setVisible(true);
-				btnEditar.setVisible(true);
-				btnRemover.setVisible(true);
+				setVisibilidade(true);
 			}
 		});
 		btnBuscar.setBounds(383, 31, 89, 23);
@@ -205,32 +233,40 @@ public class TelaGerenciaProd extends JFrame {
 		separator_1.setBounds(10, 322, 574, 14);
 		panel.add(separator_1);
 		
-		JComboBox comboBox = new JComboBox();
+		comboBox = new JComboBox();
 		comboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 			}
 		});
 		comboBox.setBounds(101, 349, 366, 21);
+		comboBox.setVisible(false);
 		panel.add(comboBox);
 		
-		JLabel lblVendedor = new JLabel("Vendedor:");
+		lblVendedor = new JLabel("Vendedor:");
 		lblVendedor.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblVendedor.setBounds(20, 347, 86, 21);
 		panel.add(lblVendedor);
+		lblVendedor.setVisible(false);
 		
-		JButton btnDistribuir = new JButton("Distribuir");
+		btnDistribuir = new JButton("Distribuir");
+		btnDistribuir.setVisible(false);
 		btnDistribuir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				int[] linhas = table.getSelectedRows();
 				if(linhas.length == 1){
-					if(!textFieldQuantidade.getText().equals("")){
-						if(comboBox.getSelectedIndex()!=-1){
+					try{
+						int quant = Integer.parseInt(textFieldQuantidade.getText());
+						if(quant > 0){
+							if(comboBox.getSelectedIndex()!=-1){
 							
+							}else{
+								Popup.selectVendedor();
+							}		
 						}else{
-							Popup.selectVendedor();
-						}		
-					}else{
+							Popup.quantProd();
+						}
+					}catch(NumberFormatException nfe){
 						Popup.quantProd();
 					}
 				}else{
@@ -241,16 +277,18 @@ public class TelaGerenciaProd extends JFrame {
 		btnDistribuir.setBounds(479, 348, 89, 23);
 		panel.add(btnDistribuir);
 		
-		JLabel lblQuantidade = new JLabel("Quantidade:");
+		lblQuantidade = new JLabel("Quantidade:");
 		lblQuantidade.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblQuantidade.setBounds(20, 396, 86, 21);
 		panel.add(lblQuantidade);
+		lblQuantidade.setVisible(false);
 		
 		textFieldQuantidade = new JTextField();
 		textFieldQuantidade.setColumns(10);
 		textFieldQuantidade.setBounds(101, 398, 102, 20);
 		panel.add(textFieldQuantidade);
 		btnEditar.setVisible(false);
+		textFieldQuantidade.setVisible(false);
 		
 		JLabel lblBuscaDeProduto = new JLabel("Gerenciamento de produto");
 		lblBuscaDeProduto.setForeground(SystemColor.window);
@@ -270,7 +308,7 @@ public class TelaGerenciaProd extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				TelaCadProd.getInstance().setVisible(true);
 				limparCampos();
-				scrollPane.setVisible(false);
+				setVisibilidade(false);
 				dispose();
 			}
 		});

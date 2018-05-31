@@ -12,6 +12,8 @@
 
 package negocio;
 
+import java.sql.ResultSet;
+
 import entidades.Funcionario;
 import excecoes.CPFNaoEncontradoException;
 import interfaces.IRepositorioFuncionario;
@@ -34,6 +36,12 @@ public class CadastroFuncionario {
 	}
 	public void atualizar(Funcionario funcionario){
 		repositorio.atualizar(funcionario);
+	}
+	public ResultSet listar(){
+		return repositorio.listar();
+	}
+	public ResultSet listar(String identificador){
+		return repositorio.listar(identificador);
 	}
 	
 }

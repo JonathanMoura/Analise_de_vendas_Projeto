@@ -10,6 +10,8 @@
  *-------------------------------------------*/
 package dados;
 
+import java.sql.ResultSet;
+
 import entidades.Funcionario;
 import excecoes.CPFNaoEncontradoException;
 import interfaces.IRepositorioFuncionario;
@@ -79,4 +81,15 @@ public class RepFuncArray implements IRepositorioFuncionario{
 		}
 		repositorio[i] = funcionario;
 	}
+	
+	public ResultSet listar(){
+		ResultSet rs = null;
+		return rs;
+	}
+	
+	public ResultSet listar(String identificador){
+		ResultSet rs = null;
+		return rs;
+	}
+	
 }

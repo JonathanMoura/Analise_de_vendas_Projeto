@@ -24,7 +24,7 @@ public class Fachada {
 	private CadastroFuncionario funcionario;
 	public Fachada(){
 		IRepositorioProduto repProd = new RepProdBD();
-		IRepositorioFuncionario repFunc = new RepFuncArray();
+		IRepositorioFuncionario repFunc = new RepFuncBD();
 		
 		produto = new CadastroProduto(repProd);
 		funcionario = new CadastroFuncionario(repFunc);
@@ -67,6 +67,12 @@ public class Fachada {
 	}	
 	public void atualizar(Funcionario funcionario)  {
 		this.funcionario.atualizar(funcionario);
+	}
+	public ResultSet listarFunc(){
+		return this.funcionario.listar();
+	}
+	public ResultSet listarSubordinados(String chave){
+		return this.funcionario.listar(chave);
 	}
 	//FIM CRUD de funcionário
 }

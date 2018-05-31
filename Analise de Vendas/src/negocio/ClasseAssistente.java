@@ -26,6 +26,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.swing.JComboBox;
 import javax.swing.JTable;
 
 import entidades.Gerente;
@@ -115,20 +116,31 @@ public class ClasseAssistente {
 		}
 	}
 
-	public static void montarTabelaProduto(Produto produto, ModeloTabelaProduto modelo, JTable table){		
+	public static void montarTabelaProduto(Produto produto, ModeloTabelaProduto modelo){		
 		if(produto != null){
-			modelo.addProduto(produto);/*
-			table.setValueAt(produto.getNome(), 0, 0);
-			table.setValueAt(produto.getDescricao(), 0, 1);
-			table.setValueAt(produto.getQuantidade(), 0, 2);
-			table.setValueAt(produto.getValor(), 0, 3);*/
+			modelo.addProduto(produto);
+		}
+	}
+	
+	public static void montaComboBox(JComboBox comboBox){
+		ResultSet vendedores;
+		String nome;
+		String chave = ValidarDados.funcionario.getCpf();
+		vendedores = Fachada.getInstance().listarSubordinados(chave);
+		try{
+			while(vendedores.next()){
+				nome = vendedores.getString("nome");
+				comboBox.addItem(nome);;
+			}
+		}catch(SQLException sqle){
+			
 		}
 	}
 	
 	//Gerar usuario para teste com perfil de gerente
 	public static void usuarioTeste(){
-		Gerente gerente = new Gerente("Gerente de Vendas","01234567899","adm.analise.vendas@gmail.com",
+		/*Gerente gerente = new Gerente("Gerente de Vendas","01234567899","adm.analise.vendas@gmail.com",
 								 	  "123456","Gerente","01234567899");		
-		Fachada.getInstance().cadastrar(gerente);
+		Fachada.getInstance().cadastrar(gerente);*/
 	}
 }

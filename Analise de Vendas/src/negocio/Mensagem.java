@@ -22,7 +22,7 @@ public class Mensagem {
 	public static final String TEXTSENHA = "Sua nova senha foi gerada: ";
 	public static final String NUMBERFORMAT = "Insira apenas valores númericos nos campos de \"Quantidade\" e \"valor\"(inserir ponto ao invés de vírgula)."; 
 	public static final String SELECTROW = "Selecione ao menos uma linha.";
-	public static final String SELECT1ROW = "Selecione uma linha para edição.";
-	public static final String QUANTPROD = "Informe a quantidade do produto.";
+	public static final String SELECT1ROW = "Selecione uma linha.";
+	public static final String QUANTPROD = "Informe uma quantidade (maior que zero) do produto.";
 	public static final String SELECTVEND = "Selecione um vendedor para receber o produto.";
 }

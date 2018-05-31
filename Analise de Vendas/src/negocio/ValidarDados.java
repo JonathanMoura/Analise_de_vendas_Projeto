@@ -24,7 +24,7 @@ import telas.Popup;
 public class ValidarDados {
 	private static final String GERENTE = "Gerente";
 	private static final String VENDEDOR = "Vendedor";
-	private static Funcionario funcionario;
+	public static Funcionario funcionario;
 	
 	public static boolean validarCampoVazio(String arg0, String arg1, String arg2, String arg3) {
 		try {

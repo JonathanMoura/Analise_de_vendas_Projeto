@@ -11,6 +11,8 @@
  *-------------------------------------------*/
 package interfaces;
 
+import java.sql.ResultSet;
+
 import entidades.Funcionario;
 import excecoes.CPFNaoEncontradoException;
 
@@ -19,4 +21,6 @@ public interface IRepositorioFuncionario {
 	public Funcionario procurar(String identificador) throws CPFNaoEncontradoException;
 	public void remover(String identificador);
 	public void atualizar(Funcionario produto);
+	public ResultSet listar();
+	public ResultSet listar(String identificador);
 }

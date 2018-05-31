@@ -62,8 +62,10 @@ public class TelaLogin extends JFrame {
 				try {
 					TelaLogin frame = new TelaLogin();
 					frame.setVisible(true);
-					//TESTE
-					ClasseAssistente.usuarioTeste(); //Gerar usuário teste com função de gerente.
+					/*TESTE
+					 *Gerar usuário teste com função de gerente.
+					 *Chamar apenas quando for usar repositorio Array
+					 *ClasseAssistente.usuarioTeste();*/ 
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
