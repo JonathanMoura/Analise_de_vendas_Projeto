@@ -84,4 +84,10 @@ public class Popup {
 	public static void selectVendedor(){
 		JOptionPane.showMessageDialog(null, Mensagem.SELECTVEND,MSGALERT,JOptionPane.WARNING_MESSAGE);
 	}
+	public static void prodCadErro(){
+		JOptionPane.showMessageDialog(null, Mensagem.CADPRODERRO,MSGALERT,JOptionPane.WARNING_MESSAGE);
+	}
+	public static void prodQuantErro(){
+		JOptionPane.showMessageDialog(null, Mensagem.CADQUANTERRO,MSGALERT,JOptionPane.WARNING_MESSAGE);
+	}
 }

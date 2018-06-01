@@ -33,6 +33,7 @@ import javax.swing.border.EmptyBorder;
 import entidades.Produto;
 import negocio.Fachada;
 import negocio.Mensagem;
+import negocio.ModeloTabelaProduto;
 import negocio.ValidarDados;
 
 import javax.swing.JTextField;
@@ -45,12 +46,25 @@ public class TelaEditProd extends JFrame {
 	private JTextField textFieldDescricao;
 	private JTextField textFieldQuantidade;
 	private JTextField textFieldValor;
-	private Produto produtoEditado;
+	public Produto produtoEditado;
+	private ModeloTabelaProduto modelo;
+	private int[] linhas;
 	
 	public static TelaEditProd getInstance(){
 		if(instance == null)
 			instance = new TelaEditProd();
 		return instance;
+	}
+	public void sair(){
+		limparCampos();
+		TelaGerenciaProd.getInstance().setVisible(true);
+		dispose();
+	}
+	
+	public void atualizarModelo(Produto produto){
+		modelo.removeProdutoAt(linhas[0]);
+		modelo.addProduto(produto);
+		modelo.fireTableDataChanged();
 	}
 	
 	public void limparCampos(){
@@ -60,12 +74,14 @@ public class TelaEditProd extends JFrame {
 		textFieldValor.setText("");
 	}
 	
-	public void passProduto(Produto produto){
-		this.produtoEditado = produto;
-		textFieldNome.setText(produto.getNome());
-		textFieldDescricao.setText(produto.getDescricao());
-		textFieldQuantidade.setText(String.valueOf(produto.getQuantidade()));
-		textFieldValor.setText(String.valueOf(produto.getValor()));
+	public void passProduto(ModeloTabelaProduto modelo, int[] linhas){
+		this.modelo = modelo;
+		this.linhas = linhas;
+		this.produtoEditado = modelo.getProdutoAt(linhas[0]);
+		textFieldNome.setText(produtoEditado.getNome());
+		textFieldDescricao.setText(produtoEditado.getDescricao());
+		textFieldQuantidade.setText(String.valueOf(produtoEditado.getQuantidade()));
+		textFieldValor.setText(String.valueOf(produtoEditado.getValor()));
 	}
 	
 	/**
@@ -141,7 +157,9 @@ public class TelaEditProd extends JFrame {
 													  Double.parseDouble(textFieldValor.getText()), 
 													  produtoEditado.getChave());
 						Fachada.getInstance().atualizar(produto);
-						JOptionPane.showMessageDialog(null, Mensagem.CADPRODSUC);
+						JOptionPane.showMessageDialog(null, Mensagem.ATTPRODSUC);
+						atualizarModelo(produto);
+						sair();
 					}catch(NumberFormatException nfe){
 						Popup.numberFormat();
 					} 
@@ -174,9 +192,7 @@ public class TelaEditProd extends JFrame {
 		JButton btnCancelar = new JButton("Cancelar");
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				limparCampos();
-				TelaGerenciaProd.getInstance().setVisible(true);
-				dispose();
+				sair();
 			}
 		});
 		btnCancelar.setBounds(108, 254, 89, 23);

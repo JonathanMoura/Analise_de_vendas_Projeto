@@ -13,9 +13,11 @@ package dados;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import entidades.Funcionario;
+import excecoes.CPFNaoEncontradoException;
 import interfaces.IRepositorioFuncionario;
 
 public class RepFuncBD extends RepositorioBD implements IRepositorioFuncionario{
@@ -55,7 +57,7 @@ public class RepFuncBD extends RepositorioBD implements IRepositorioFuncionario{
 		}
 	}
 
-	public Funcionario procurar(String identificador) {
+	public Funcionario procurar(String identificador) throws CPFNaoEncontradoException{
 		String where = "WHERE cpf = " + "\'"+identificador+"\'";
 		String comando = PROCURAR + where;
 		try {
@@ -68,13 +70,12 @@ public class RepFuncBD extends RepositorioBD implements IRepositorioFuncionario{
 											  rs.getString("senha"),
 											  rs.getString("funcao"),
 											  rs.getString("chave"));
-				System.out.println("Sucesso!");
 				return funcionario;
 			} else {
-				System.err.println("Erro!");
-				return null;
+				CPFNaoEncontradoException cpfnee = new CPFNaoEncontradoException(identificador);
+				throw cpfnee;
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -135,13 +136,14 @@ public class RepFuncBD extends RepositorioBD implements IRepositorioFuncionario{
 	public void atualizar(Funcionario funcionario) {
 		try {
 			PreparedStatement pstm = con.prepareStatement(ATUALIZAR);
-			pstm.setString(2, funcionario.getNome());
-			pstm.setString(1, funcionario.getCpf());
+			pstm.setString(1, funcionario.getNome());
+			pstm.setString(2, funcionario.getCpf());
 			pstm.setString(3, funcionario.getEmail());
-			pstm.setString(3, funcionario.getSenha());
-			pstm.setString(3, funcionario.getFuncao());
+			pstm.setString(4, funcionario.getSenha());
+			pstm.setString(5, funcionario.getFuncao());
 			pstm.setString(6, funcionario.getChave());
-			int res = pstm.executeUpdate(ATUALIZAR);
+			pstm.setString(7, funcionario.getCpf());
+			int res = pstm.executeUpdate();
 			if (res > 0) {
 				System.out.println("Sucesso!");
 			} else {

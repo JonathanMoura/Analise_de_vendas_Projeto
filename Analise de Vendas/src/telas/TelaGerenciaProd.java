@@ -33,7 +33,10 @@ import javax.swing.JTextField;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import entidades.Funcionario;
 import entidades.Produto;
+import excecoes.CPFNaoEncontradoException;
+import excecoes.ProdutoQuantidadeException;
 import negocio.ClasseAssistente;
 import negocio.Fachada;
 import negocio.ModeloTabelaProduto;
@@ -65,6 +68,7 @@ public class TelaGerenciaProd extends JFrame {
 	private JLabel lblVendedor;
 	private JButton btnDistribuir;
 	private JLabel lblQuantidade;
+	private List<String> cpf;
 	
 	public static TelaGerenciaProd getInstance() {
 		if (instance == null)
@@ -155,7 +159,7 @@ public class TelaGerenciaProd extends JFrame {
 					ResultSet rs;
 					rs = Fachada.getInstance().listarProd();
 					ClasseAssistente.montarTabelaProduto(rs, modelo);
-					ClasseAssistente.montaComboBox(comboBox);
+					cpf = ClasseAssistente.montaComboBox(comboBox);
 				} else{
 					Produto produto;
 					produto = Fachada.getInstance().procurarProd(textFieldNome.getText());
@@ -195,7 +199,7 @@ public class TelaGerenciaProd extends JFrame {
 				int[] linhas = table.getSelectedRows(); 
 				if(linhas.length>0){
 					for(int i = 0; i < linhas.length; i++){
-						produto = modelo.removeProdutoAt(i);
+						produto = modelo.removeProdutoAt(linhas[0]);
 						Fachada.getInstance().removerProd(produto.getNome());
 					}
 				}else{
@@ -213,7 +217,7 @@ public class TelaGerenciaProd extends JFrame {
 				Produto produto;
 				int[] linhas = table.getSelectedRows();
 				if(linhas.length == 1){
-					TelaEditProd.getInstance().passProduto(modelo.getProdutoAt(linhas[0]));
+					TelaEditProd.getInstance().passProduto(modelo,linhas);
 					TelaEditProd.getInstance().setVisible(true);
 					dispose();
 				}else{
@@ -256,10 +260,20 @@ public class TelaGerenciaProd extends JFrame {
 				int[] linhas = table.getSelectedRows();
 				if(linhas.length == 1){
 					try{
-						int quant = Integer.parseInt(textFieldQuantidade.getText());
-						if(quant > 0){
-							if(comboBox.getSelectedIndex()!=-1){
-							
+						int quantidade = Integer.parseInt(textFieldQuantidade.getText());
+						if(quantidade > 0){
+							int vendedorSelecionado = comboBox.getSelectedIndex();
+							if(vendedorSelecionado!=-1){
+								Produto produto, produtoToVendedor;
+								produtoToVendedor = produto = modelo.getProdutoAt(linhas[0]);
+								String vendedorCPF = cpf.get(vendedorSelecionado);
+								Funcionario vendedor = Fachada.getInstance().procurarFunc(vendedorCPF);
+								
+								produto.getProduto(quantidade);
+								Fachada.getInstance().atualizar(produto);
+								produtoToVendedor.setQuantidade(quantidade);
+//TODO Implementar método "Fachada.getInstance().inserirProdutoVendedor(vendedor,produto);"
+//TODO Exibir mensagem de sucesso: "Produto xxx distribuido.								
 							}else{
 								Popup.selectVendedor();
 							}		
@@ -268,6 +282,10 @@ public class TelaGerenciaProd extends JFrame {
 						}
 					}catch(NumberFormatException nfe){
 						Popup.quantProd();
+					}catch(ProdutoQuantidadeException pqe){
+						Popup.prodQuantErro();
+					} catch (CPFNaoEncontradoException cpfnee) {
+						Popup.cpfNaoEncontrado(cpfnee);
 					}
 				}else{
 					Popup.select1Row();

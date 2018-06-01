@@ -12,7 +12,10 @@
 package negocio;
 
 public class Mensagem {
+	public static final String CADPRODERRO = "Produto já cadastrado com esse nome.";
 	public static final String CADPRODSUC = "Produto cadastrado com sucesso!";
+	public static final String CADQUANTERRO = "Quantidade solicitada de produto acima da quantidade armazenada!";
+	public static final String ATTPRODSUC = "Produto editado com sucesso!";
 	public static final String CAMPOVAZIO = "Preencha todos os campos vazios.";
 	public static final String SENHAINVALIDA = "Senha inválida, insira novamente.";
 	public static final String CPFNENCONTRADO = " não está cadastrado.";

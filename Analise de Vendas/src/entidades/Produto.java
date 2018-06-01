@@ -11,6 +11,8 @@
  *-------------------------------------------*/
 package entidades;
 
+import excecoes.ProdutoQuantidadeException;
+
 public class Produto {
 	private String nome, descricao, chave;
 	private int quantidade;
@@ -68,6 +70,13 @@ public class Produto {
 		this.chave = chave;
 	}
 	
+	public void getProduto(int quantidade) throws ProdutoQuantidadeException{
+		if(this.quantidade > quantidade){
+			this.quantidade -= quantidade;
+		}else{
+			throw new ProdutoQuantidadeException();
+		}
+	}
 	
 }
 

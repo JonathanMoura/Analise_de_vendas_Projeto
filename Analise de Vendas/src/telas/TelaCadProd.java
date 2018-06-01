@@ -28,6 +28,7 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
 import java.awt.event.ActionEvent;
 import negocio.Fachada;
 import negocio.Mensagem;
@@ -122,12 +123,18 @@ public class TelaCadProd extends JFrame {
 				if (ValidarDados.validarCampoVazio(textFieldNome.getText(), textFieldDescricao.getText(),
 						textFieldQuantidade.getText(), textFieldValor.getText())) {			
 					try{
+						Produto produtoCadastrado;
 						Produto produto = new Produto(textFieldNome.getText(), textFieldDescricao.getText(),
-						Integer.parseInt(textFieldQuantidade.getText()),
-						Double.parseDouble(textFieldValor.getText()), "none");
-						Fachada.getInstance().cadastrar(produto);
-						JOptionPane.showMessageDialog(null, Mensagem.CADPRODSUC);
-						limparCampos();
+													  Integer.parseInt(textFieldQuantidade.getText()),
+													  Double.parseDouble(textFieldValor.getText()), "none");
+						produtoCadastrado = Fachada.getInstance().procurarProd(textFieldNome.getText());
+						if(produtoCadastrado == null){
+							Fachada.getInstance().cadastrar(produto);
+							JOptionPane.showMessageDialog(null, Mensagem.CADPRODSUC);
+							limparCampos();
+						}else{
+							Popup.prodCadErro();
+						}
 					}catch(NumberFormatException nfe){
 						Popup.numberFormat();
 					} 

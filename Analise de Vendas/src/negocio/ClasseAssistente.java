@@ -104,7 +104,7 @@ public class ClasseAssistente {
 			while(rs.next()){
 				Produto p = new Produto();
 				p.setNome(rs.getString("nome"));
-				p.setDescricao(rs.getString("descrição"));
+				p.setDescricao(rs.getString("descricao"));
 				p.setQuantidade(rs.getInt("quantidade"));
 				p.setValor(rs.getDouble("valor"));
 				produtos.add(p);
@@ -122,18 +122,21 @@ public class ClasseAssistente {
 		}
 	}
 	
-	public static void montaComboBox(JComboBox comboBox){
+	public static List montaComboBox(JComboBox comboBox){
 		ResultSet vendedores;
 		String nome;
 		String chave = ValidarDados.funcionario.getCpf();
+		List<String> cpf = new ArrayList();
 		vendedores = Fachada.getInstance().listarSubordinados(chave);
 		try{
 			while(vendedores.next()){
 				nome = vendedores.getString("nome");
-				comboBox.addItem(nome);;
+				cpf.add(vendedores.getString("cpf"));
+				comboBox.addItem(nome);
 			}
+			return cpf;
 		}catch(SQLException sqle){
-			
+			return null;
 		}
 	}
 	

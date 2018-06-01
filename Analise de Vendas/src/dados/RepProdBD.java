@@ -19,6 +19,7 @@ import java.sql.Statement;
 
 import entidades.Produto;
 import interfaces.IRepositorioProduto;
+import telas.TelaEditProd;
 
 public class RepProdBD extends RepositorioBD implements IRepositorioProduto{
 	private static final String INSERIR   = "INSERT INTO produto ";
@@ -116,12 +117,13 @@ public class RepProdBD extends RepositorioBD implements IRepositorioProduto{
 	public void atualizar(Produto produto) {
 		try {
 			PreparedStatement pstm = con.prepareStatement(ATUALIZAR);
-			pstm.setString(2, produto.getNome());
-			pstm.setString(1, produto.getDescricao());
+			pstm.setString(1, produto.getNome());
+			pstm.setString(2, produto.getDescricao());
 			pstm.setInt(3, produto.getQuantidade());
-			pstm.setDouble(3, produto.getValor());
-			pstm.setString(6, produto.getChave());
-			int res = pstm.executeUpdate(ATUALIZAR);
+			pstm.setDouble(4, produto.getValor());
+			pstm.setString(5, produto.getChave());
+			pstm.setString(6, TelaEditProd.getInstance().produtoEditado.getNome());
+			int res = pstm.executeUpdate();
 			if (res > 0) {
 				System.out.println("Sucesso!");
 			} else {
