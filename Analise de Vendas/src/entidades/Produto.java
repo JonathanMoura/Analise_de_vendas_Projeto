@@ -14,7 +14,7 @@ package entidades;
 import excecoes.ProdutoQuantidadeException;
 
 public class Produto {
-	private String nome, descricao, chave;
+	private String nome, descricao;
 	private int quantidade;
 	private double valor;
 	
@@ -22,12 +22,11 @@ public class Produto {
 		
 	}
 	
-	public Produto(String nome, String descricao, int quantidade, double valor, String chave) {
+	public Produto(String nome, String descricao, int quantidade, double valor) {
 		this.nome = nome;
 		this.descricao = descricao;
 		this.quantidade = quantidade;
 		this.valor = valor;
-		this.chave = chave;
 	}
 	
 	public String getNome() {
@@ -61,16 +60,8 @@ public class Produto {
 	public void setValor(double valor) {
 		this.valor = valor;
 	}
-
-	public String getChave() {
-		return chave;
-	}
-
-	public void setChave(String chave) {
-		this.chave = chave;
-	}
 	
-	public void getProduto(int quantidade) throws ProdutoQuantidadeException{
+	public void retirarProduto(int quantidade) throws ProdutoQuantidadeException{
 		if(this.quantidade > quantidade){
 			this.quantidade -= quantidade;
 		}else{

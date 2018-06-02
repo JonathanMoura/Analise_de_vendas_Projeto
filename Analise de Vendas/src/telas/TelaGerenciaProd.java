@@ -35,6 +35,7 @@ import javax.swing.table.DefaultTableModel;
 
 import entidades.Funcionario;
 import entidades.Produto;
+import entidades.Vendedor;
 import excecoes.CPFNaoEncontradoException;
 import excecoes.ProdutoQuantidadeException;
 import negocio.ClasseAssistente;
@@ -68,6 +69,7 @@ public class TelaGerenciaProd extends JFrame {
 	private JLabel lblVendedor;
 	private JButton btnDistribuir;
 	private JLabel lblQuantidade;
+	private JLabel lblMsgSucesso;
 	private List<String> cpf;
 	
 	public static TelaGerenciaProd getInstance() {
@@ -103,7 +105,8 @@ public class TelaGerenciaProd extends JFrame {
 			comboBox.setVisible(false);
 			lblVendedor.setVisible(false);
 			btnDistribuir.setVisible(false);
-			lblQuantidade.setVisible(false); 
+			lblQuantidade.setVisible(false);
+			lblMsgSucesso.setVisible(false);
 		}
 	}
 		
@@ -227,6 +230,7 @@ public class TelaGerenciaProd extends JFrame {
 		});
 		btnEditar.setBounds(484, 166, 89, 23);
 		panel.add(btnEditar);
+		btnEditar.setVisible(false);
 		
 		JLabel lblDistribuir = new JLabel("Distribuir:");
 		lblDistribuir.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -253,6 +257,11 @@ public class TelaGerenciaProd extends JFrame {
 		panel.add(lblVendedor);
 		lblVendedor.setVisible(false);
 		
+		/*Distribuição de um tipo de produto para um vendedor
+		 * O método verifica o produto selecionado, a quantidade inserida do produto e 
+		 * o vendedor selecionado. Em seguida recupera o cpf do vendedor para buscá-lo no 
+		 * seu repositorio e inserir o produto para ele.   
+		*/
 		btnDistribuir = new JButton("Distribuir");
 		btnDistribuir.setVisible(false);
 		btnDistribuir.addActionListener(new ActionListener() {
@@ -268,12 +277,13 @@ public class TelaGerenciaProd extends JFrame {
 								produtoToVendedor = produto = modelo.getProdutoAt(linhas[0]);
 								String vendedorCPF = cpf.get(vendedorSelecionado);
 								Funcionario vendedor = Fachada.getInstance().procurarFunc(vendedorCPF);
-								
-								produto.getProduto(quantidade);
+								produto.retirarProduto(quantidade);
 								Fachada.getInstance().atualizar(produto);
 								produtoToVendedor.setQuantidade(quantidade);
-//TODO Implementar método "Fachada.getInstance().inserirProdutoVendedor(vendedor,produto);"
-//TODO Exibir mensagem de sucesso: "Produto xxx distribuido.								
+								Fachada.getInstance().cadastrar((Vendedor)vendedor,produtoToVendedor);
+								lblMsgSucesso.setVisible(true);
+								textFieldQuantidade.setText("");
+								TelaEditProd.getInstance().atualizarModelo(produto);
 							}else{
 								Popup.selectVendedor();
 							}		
@@ -305,8 +315,14 @@ public class TelaGerenciaProd extends JFrame {
 		textFieldQuantidade.setColumns(10);
 		textFieldQuantidade.setBounds(101, 398, 102, 20);
 		panel.add(textFieldQuantidade);
-		btnEditar.setVisible(false);
 		textFieldQuantidade.setVisible(false);
+		
+		lblMsgSucesso = new JLabel("Produto distribuido!");
+		lblMsgSucesso.setForeground(Color.GREEN);
+		lblMsgSucesso.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblMsgSucesso.setBounds(411, 298, 162, 21);
+		panel.add(lblMsgSucesso);
+		lblMsgSucesso.setVisible(false);
 		
 		JLabel lblBuscaDeProduto = new JLabel("Gerenciamento de produto");
 		lblBuscaDeProduto.setForeground(SystemColor.window);
@@ -359,6 +375,7 @@ public class TelaGerenciaProd extends JFrame {
 		JButton button = new JButton(" Informa\u00E7\u00F5es de ajuda");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
 			}
 		});
 		button.setIcon(new ImageIcon(TelaGerenciaProd.class.getResource("/imagem/question.png")));

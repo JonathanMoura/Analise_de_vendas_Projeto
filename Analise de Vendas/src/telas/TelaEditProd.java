@@ -154,8 +154,7 @@ public class TelaEditProd extends JFrame {
 						Produto produto = new Produto(textFieldNome.getText(), 
 													  textFieldDescricao.getText(),
 													  Integer.parseInt(textFieldQuantidade.getText()),
-													  Double.parseDouble(textFieldValor.getText()), 
-													  produtoEditado.getChave());
+													  Double.parseDouble(textFieldValor.getText()));
 						Fachada.getInstance().atualizar(produto);
 						JOptionPane.showMessageDialog(null, Mensagem.ATTPRODSUC);
 						atualizarModelo(produto);

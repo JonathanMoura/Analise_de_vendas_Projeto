@@ -25,8 +25,8 @@ public class RepProdBD extends RepositorioBD implements IRepositorioProduto{
 	private static final String INSERIR   = "INSERT INTO produto ";
 	private static final String PROCURAR  = "SELECT * FROM produto ";
 	private static final String REMOVER   = "DELETE FROM produto WHERE nome = ";
-	private static final String ATUALIZAR = "UPDATE produto SET nome = ?, descricao = ?, quantidade = ?, valor = ?, chave = ? WHERE nome = ?";
-	private static final String CAMPOS    = "(id, nome, descricao, quantidade, valor, chave) ";	
+	private static final String ATUALIZAR = "UPDATE produto SET nome = ?, descricao = ?, quantidade = ?, valor = ? WHERE nome = ?";
+	private static final String CAMPOS    = "(id, nome, descricao, quantidade, valor) ";	
 	
 	public RepProdBD(){
 		super();
@@ -40,8 +40,7 @@ public class RepProdBD extends RepositorioBD implements IRepositorioProduto{
 		String valores =  "values (default,\'" + produto.getNome() 		  + "\',\'" 
 				 							   + produto.getDescricao()   + "\'," 
 				 							   + produto.getQuantidade()  + "," 
-				 							   + produto.getValor() 	  + ",\'" 
-				 							   + produto.getChave() 	  + "\')";
+				 							   + produto.getValor() 	  + ")" ;
 		String comando = INSERIR + CAMPOS + valores;
 		//Grava no banco de dados
 		try {
@@ -67,8 +66,7 @@ public class RepProdBD extends RepositorioBD implements IRepositorioProduto{
 				Produto produto = new Produto(rs.getString("nome"),
 											  rs.getString("descricao"),
 											  rs.getInt("quantidade"),
-											  rs.getDouble("valor"),
-											  rs.getString("chave"));
+											  rs.getDouble("valor"));
 				System.out.println("Sucesso!");
 				return produto;
 			} else {
@@ -121,8 +119,7 @@ public class RepProdBD extends RepositorioBD implements IRepositorioProduto{
 			pstm.setString(2, produto.getDescricao());
 			pstm.setInt(3, produto.getQuantidade());
 			pstm.setDouble(4, produto.getValor());
-			pstm.setString(5, produto.getChave());
-			pstm.setString(6, TelaEditProd.getInstance().produtoEditado.getNome());
+			pstm.setString(5, TelaEditProd.getInstance().produtoEditado.getNome());
 			int res = pstm.executeUpdate();
 			if (res > 0) {
 				System.out.println("Sucesso!");

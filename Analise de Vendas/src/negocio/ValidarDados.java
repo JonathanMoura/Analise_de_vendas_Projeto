@@ -22,8 +22,9 @@ import excecoes.SenhaInvalidaException;
 import telas.Popup;
 
 public class ValidarDados {
-	private static final String GERENTE = "Gerente";
-	private static final String VENDEDOR = "Vendedor";
+	public static final String GERENTE = "Gerente";
+	public static final String VENDEDOR = "Vendedor";
+	public static final String ADM = "Administrador";
 	public static Funcionario funcionario;
 	
 	public static boolean validarCampoVazio(String arg0, String arg1, String arg2, String arg3) {
@@ -86,6 +87,7 @@ public class ValidarDados {
 		switch(funcionario.getFuncao()){
 			case GERENTE: return GERENTE;
 			case VENDEDOR: return VENDEDOR;
+			case ADM: return ADM;
 			default: return null;
 		}
 	}

@@ -15,17 +15,22 @@ import java.sql.ResultSet;
 import dados.*;
 import entidades.Funcionario;
 import entidades.Produto;
+import entidades.Vendedor;
 import excecoes.CPFNaoEncontradoException;
 import interfaces.IRepositorioFuncionario;
 import interfaces.IRepositorioProduto;
+import interfaces.IRepositorioVendProd;
 public class Fachada {
 	private static Fachada instance;
 	private CadastroProduto produto;
 	private CadastroFuncionario funcionario;
+	private CadastroVendProd vendProd;
 	public Fachada(){
 		IRepositorioProduto repProd = new RepProdBD();
 		IRepositorioFuncionario repFunc = new RepFuncBD();
+		IRepositorioVendProd repVendProd = new RepVendProdBD();
 		
+		vendProd = new CadastroVendProd(repVendProd);
 		produto = new CadastroProduto(repProd);
 		funcionario = new CadastroFuncionario(repFunc);
 	}
@@ -75,4 +80,10 @@ public class Fachada {
 		return this.funcionario.listar(chave);
 	}
 	//FIM CRUD de funcionário
+	
+	//INICIO CRUD de vendedor_produto
+	public void cadastrar(Vendedor vendedor, Produto produto){
+		this.vendProd.inserir(vendedor,produto);
+	}
+	//FIM CRUD de vendedor_produto
 }

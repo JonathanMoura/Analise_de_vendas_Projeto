@@ -126,7 +126,7 @@ public class TelaCadProd extends JFrame {
 						Produto produtoCadastrado;
 						Produto produto = new Produto(textFieldNome.getText(), textFieldDescricao.getText(),
 													  Integer.parseInt(textFieldQuantidade.getText()),
-													  Double.parseDouble(textFieldValor.getText()), "none");
+													  Double.parseDouble(textFieldValor.getText()));
 						produtoCadastrado = Fachada.getInstance().procurarProd(textFieldNome.getText());
 						if(produtoCadastrado == null){
 							Fachada.getInstance().cadastrar(produto);

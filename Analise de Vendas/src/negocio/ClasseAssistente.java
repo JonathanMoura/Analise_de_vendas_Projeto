@@ -29,6 +29,7 @@ import javax.mail.internet.MimeMessage;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 
+import entidades.Administrador;
 import entidades.Gerente;
 import entidades.Produto;
 
@@ -140,10 +141,10 @@ public class ClasseAssistente {
 		}
 	}
 	
-	//Gerar usuario para teste com perfil de gerente
-	public static void usuarioTeste(){
-		/*Gerente gerente = new Gerente("Gerente de Vendas","01234567899","adm.analise.vendas@gmail.com",
-								 	  "123456","Gerente","01234567899");		
-		Fachada.getInstance().cadastrar(gerente);*/
+	//Gerar usuario para teste com perfil de administrador
+	public static void usuarioAdm(){
+		Administrador administrador = new Administrador("Administrador do Programa","12345678910","adm.analise.vendas@gmail.com",
+								 	  "123456","Administrador","01234567899");		
+		Fachada.getInstance().cadastrar(administrador);
 	}
 }

@@ -43,8 +43,6 @@ public class TelaLogin extends JFrame {
 	private JTextField textFieldCPF;
 	private JPasswordField passwordField;
 	public static TelaLogin instance;
-	private static final String GERENTE = "Gerente";
-	private static final String VENDEDOR = "Vendedor";
 	
 	public static TelaLogin getInstance() {
 		if (instance == null) {
@@ -62,10 +60,10 @@ public class TelaLogin extends JFrame {
 				try {
 					TelaLogin frame = new TelaLogin();
 					frame.setVisible(true);
-					/*TESTE
-					 *Gerar usuário teste com função de gerente.
-					 *Chamar apenas quando for usar repositorio Array
-					 *ClasseAssistente.usuarioTeste();*/ 
+					
+					 /*Gerar usuário adiministrador
+					 *Chamar apenas quando for usar repositorio Array*/
+					 //ClasseAssistente.usuarioAdm();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -143,11 +141,14 @@ public class TelaLogin extends JFrame {
 				if (ValidarDados.validarCampoVazio(cpf, senha)) {
 					if (ValidarDados.validarLogin(cpf, senha)) {
 						switch (ValidarDados.identificaFuncao()) {
-						case GERENTE:
+						case ValidarDados.GERENTE:
 							TelaCadProd.getInstance().setVisible(true);
 							dispose();
-						case VENDEDOR:
-							//TelaCadProd.getInstance().setVisible(true);
+						case ValidarDados.VENDEDOR:
+							TelaCadPedido.getInstance().setVisible(true);
+							dispose();
+						case ValidarDados.ADM:
+							TelaCadGerente.getInstance().setVisible(true);
 							dispose();
 						default: 
 							dispose();
