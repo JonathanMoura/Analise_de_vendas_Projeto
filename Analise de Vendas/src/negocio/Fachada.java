@@ -82,8 +82,11 @@ public class Fachada {
 	//FIM CRUD de funcionário
 	
 	//INICIO CRUD de vendedor_produto
-	public void cadastrar(Vendedor vendedor, Produto produto){
+	public void cadastrar(Funcionario vendedor, Produto produto){
 		this.vendProd.inserir(vendedor,produto);
+	}
+	public ResultSet listarVendProd(){
+		return this.vendProd.listar();
 	}
 	//FIM CRUD de vendedor_produto
 }

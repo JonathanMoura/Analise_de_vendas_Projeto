@@ -41,7 +41,7 @@ public class TelaCadGerente extends JFrame {
 		setTitle("An\u00E1lise de Vendas");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 600, 600);
+		setBounds(100, 0, 600, 600);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(135, 206, 235));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));

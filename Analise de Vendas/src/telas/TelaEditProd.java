@@ -57,6 +57,9 @@ public class TelaEditProd extends JFrame {
 	}
 	public void sair(){
 		limparCampos();
+		modelo = null;
+		linhas = null;
+		produtoEditado = null;
 		TelaGerenciaProd.getInstance().setVisible(true);
 		dispose();
 	}
@@ -64,7 +67,6 @@ public class TelaEditProd extends JFrame {
 	public void atualizarModelo(Produto produto){
 		modelo.removeProdutoAt(linhas[0]);
 		modelo.addProduto(produto);
-		modelo.fireTableDataChanged();
 	}
 	
 	public void limparCampos(){
@@ -107,7 +109,7 @@ public class TelaEditProd extends JFrame {
 		setTitle("An\u00E1lise de Vendas");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 600, 570);
+		setBounds(100, 0, 600, 570);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(135, 206, 235));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));

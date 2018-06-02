@@ -41,6 +41,7 @@ import excecoes.ProdutoQuantidadeException;
 import negocio.ClasseAssistente;
 import negocio.Fachada;
 import negocio.ModeloTabelaProduto;
+import negocio.ModeloTabelaVendProd;
 import negocio.ValidarDados;
 
 import javax.swing.ListSelectionModel;
@@ -58,18 +59,21 @@ public class TelaGerenciaProd extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField textFieldNome;
-	private JTable table;
+	private JTextField textFieldQuantidade;
+	private JTable tableProdutos;
+	private JTable tableVendProd;
 	private ModeloTabelaProduto modelo; 
-	private JScrollPane scrollPane;
+	private ModeloTabelaVendProd modeloVendProd; 
+	private JScrollPane scrollPaneProdutos;
+	private JScrollPane scrollPaneVendProd;
 	public static TelaGerenciaProd instance;
 	private JButton btnRemover;
+	private JButton btnRemoverProdVend;
 	private JButton btnEditar;
-	private JComboBox comboBox;
-	private JTextField textFieldQuantidade;
-	private JLabel lblVendedor;
 	private JButton btnDistribuir;
+	private JComboBox comboBox;
+	private JLabel lblVendedor;
 	private JLabel lblQuantidade;
-	private JLabel lblMsgSucesso;
 	private List<String> cpf;
 	
 	public static TelaGerenciaProd getInstance() {
@@ -80,8 +84,8 @@ public class TelaGerenciaProd extends JFrame {
 	
 	public void limparCampos(){
 		textFieldNome.setText("");
-		if(table.getRowCount() > 0)
-			table.removeRowSelectionInterval(0, table.getRowCount() - 1);
+		if(tableProdutos.getRowCount() > 0)
+			tableProdutos.removeRowSelectionInterval(0, tableProdutos.getRowCount() - 1);
 		if(comboBox.getItemCount()>0){
 			comboBox.removeAllItems();
 		}
@@ -89,24 +93,27 @@ public class TelaGerenciaProd extends JFrame {
 	
 	public void setVisibilidade(Boolean visivel){
 		if(visivel == true){
-			scrollPane.setVisible(true);
+			scrollPaneProdutos.setVisible(true);
+			scrollPaneVendProd.setVisible(true);
 			btnEditar.setVisible(true);
 			btnRemover.setVisible(true);
+			btnRemoverProdVend.setVisible(true);
 			textFieldQuantidade.setVisible(true);
 			comboBox.setVisible(true);
 			lblVendedor.setVisible(true);
 			btnDistribuir.setVisible(true);
 			lblQuantidade.setVisible(true); 
 		}else{
-			scrollPane.setVisible(false);
+			scrollPaneProdutos.setVisible(false);
+			scrollPaneVendProd.setVisible(false);
 			btnEditar.setVisible(false);
 			btnRemover.setVisible(false);
+			btnRemoverProdVend.setVisible(false);
 			textFieldQuantidade.setVisible(false);
 			comboBox.setVisible(false);
 			lblVendedor.setVisible(false);
 			btnDistribuir.setVisible(false);
 			lblQuantidade.setVisible(false);
-			lblMsgSucesso.setVisible(false);
 		}
 	}
 		
@@ -130,7 +137,7 @@ public class TelaGerenciaProd extends JFrame {
 		setTitle("An\u00E1lise de Vendas");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 50, 600, 650);
+		setBounds(100, 0, 600, 725);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(135, 206, 235));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -139,7 +146,7 @@ public class TelaGerenciaProd extends JFrame {
 
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(255, 255, 255));
-		panel.setBounds(0, 135, 594, 487);
+		panel.setBounds(0, 135, 594, 562);
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
@@ -153,15 +160,24 @@ public class TelaGerenciaProd extends JFrame {
 		textFieldNome.setBounds(150, 31, 203, 20);
 		panel.add(textFieldNome);
 		
+		//Busca por um produto ou todos os produtos. Mostra na tabela os produtos encontrados.
 		JButton btnBuscar = new JButton("Buscar");
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				//Caso a tabela esteja preenchida, ela será limpada, para receber novos resultados.
 				while(modelo.getRowCount()>0)
 					modelo.removeProdutoAt(0);
+				
+				//Caso o campo de busca esteja vazio, será listado todos os produtos cadastrados.
 				if (textFieldNome.getText().equals("")) {
 					ResultSet rs;
 					rs = Fachada.getInstance().listarProd();
+					
+					//Insere resultados da busca na tabela.
 					ClasseAssistente.montarTabelaProduto(rs, modelo);
+					
+					//Monta o comboBox com os vendedores supordinados ao gerente logado e devolve o cpf do gerente
 					cpf = ClasseAssistente.montaComboBox(comboBox);
 				} else{
 					Produto produto;
@@ -175,31 +191,31 @@ public class TelaGerenciaProd extends JFrame {
 		panel.add(btnBuscar);
 		
 		modelo = new ModeloTabelaProduto();
-		table = new JTable(modelo);
-		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		table.setBounds(68, 163, 100, 30);
-		table.setPreferredScrollableViewportSize(new Dimension(500,100));
-		table.setFillsViewportHeight(true);
+		tableProdutos = new JTable(modelo);
+		tableProdutos.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		tableProdutos.setBounds(68, 163, 100, 30);
+		tableProdutos.setPreferredScrollableViewportSize(new Dimension(500,100));
+		tableProdutos.setFillsViewportHeight(true);
 
-		scrollPane=new JScrollPane(table);
-		scrollPane.setBounds(20, 118, 452, 157);
-		panel.add(scrollPane);
-		scrollPane.setVisible(false);
+		scrollPaneProdutos=new JScrollPane(tableProdutos);
+		scrollPaneProdutos.setBounds(20, 118, 452, 157);
+		panel.add(scrollPaneProdutos);
+		scrollPaneProdutos.setVisible(false);
 		
 		JLabel lblResultado = new JLabel("Resultado:");
 		lblResultado.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lblResultado.setBounds(20, 76, 173, 14);
 		panel.add(lblResultado);
 		
-		JSeparator separator = new JSeparator();
-		separator.setBounds(10, 93, 574, 14);
-		panel.add(separator);
+		JSeparator separatorResultado = new JSeparator();
+		separatorResultado.setBounds(10, 93, 574, 14);
+		panel.add(separatorResultado);
 		
 		btnRemover = new JButton("Remover");
 		btnRemover.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Produto produto;
-				int[] linhas = table.getSelectedRows(); 
+				int[] linhas = tableProdutos.getSelectedRows(); 
 				if(linhas.length>0){
 					for(int i = 0; i < linhas.length; i++){
 						produto = modelo.removeProdutoAt(linhas[0]);
@@ -218,7 +234,7 @@ public class TelaGerenciaProd extends JFrame {
 		btnEditar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Produto produto;
-				int[] linhas = table.getSelectedRows();
+				int[] linhas = tableProdutos.getSelectedRows();
 				if(linhas.length == 1){
 					TelaEditProd.getInstance().passProduto(modelo,linhas);
 					TelaEditProd.getInstance().setVisible(true);
@@ -237,14 +253,26 @@ public class TelaGerenciaProd extends JFrame {
 		lblDistribuir.setBounds(20, 305, 173, 14);
 		panel.add(lblDistribuir);
 		
-		JSeparator separator_1 = new JSeparator();
-		separator_1.setBounds(10, 322, 574, 14);
-		panel.add(separator_1);
+		JSeparator separatorDistribuir = new JSeparator();
+		separatorDistribuir.setBounds(10, 322, 574, 14);
+		panel.add(separatorDistribuir);
 		
 		comboBox = new JComboBox();
 		comboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String nomeVendedor = (String) comboBox.getSelectedItem();
+				//Caso a tabela esteja preenchida, ela será limpada, para receber novos resultados.
+				while(modeloVendProd.getRowCount()>0)
+					modeloVendProd.removeProdutoAt(0);
 				
+				//Listar todos os produtos do vendedor.
+					ResultSet rs;
+					//TODO método listarVendProd
+					rs = Fachada.getInstance().listarVendProd();
+					
+					//Insere resultados da busca na tabela.
+					ClasseAssistente.montarTabelaProduto(rs, modeloVendProd);
+					
 			}
 		});
 		comboBox.setBounds(101, 349, 366, 21);
@@ -266,24 +294,41 @@ public class TelaGerenciaProd extends JFrame {
 		btnDistribuir.setVisible(false);
 		btnDistribuir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				int[] linhas = table.getSelectedRows();
+				int[] linhas = tableProdutos.getSelectedRows();
 				if(linhas.length == 1){
 					try{
 						int quantidade = Integer.parseInt(textFieldQuantidade.getText());
 						if(quantidade > 0){
 							int vendedorSelecionado = comboBox.getSelectedIndex();
 							if(vendedorSelecionado!=-1){
-								Produto produto, produtoToVendedor;
-								produtoToVendedor = produto = modelo.getProdutoAt(linhas[0]);
+								Produto produto; 
+								Produto produtoToVendedor = new Produto();
+								
+								//Recupera o produto selecionado na tabela
+								produto = modelo.getProdutoAt(linhas[0]);
+								//Recupera os dados do vendedor selecionado no dropDown
 								String vendedorCPF = cpf.get(vendedorSelecionado);
 								Funcionario vendedor = Fachada.getInstance().procurarFunc(vendedorCPF);
+								
+								//Retirar do repositorio a quantidade de produto selecionado
 								produto.retirarProduto(quantidade);
+								TelaEditProd.getInstance().produtoEditado = produto;
 								Fachada.getInstance().atualizar(produto);
+								TelaEditProd.getInstance().sair();
+								
+								//Inserir o produto para o vendedor
+								produtoToVendedor.setNome(produto.getNome());
+								produtoToVendedor.setDescricao(produto.getDescricao());
 								produtoToVendedor.setQuantidade(quantidade);
-								Fachada.getInstance().cadastrar((Vendedor)vendedor,produtoToVendedor);
-								lblMsgSucesso.setVisible(true);
+								produtoToVendedor.setValor(produto.getValor());
+								Fachada.getInstance().cadastrar(vendedor,produtoToVendedor);
+								
+								//Atualizar tabelas 
+								modeloVendProd.addProduto(produtoToVendedor);
+								modelo.removeProdutoAt(linhas[0]);
+								modelo.addProduto(produto);
 								textFieldQuantidade.setText("");
-								TelaEditProd.getInstance().atualizarModelo(produto);
+								
 							}else{
 								Popup.selectVendedor();
 							}		
@@ -294,7 +339,7 @@ public class TelaGerenciaProd extends JFrame {
 						Popup.quantProd();
 					}catch(ProdutoQuantidadeException pqe){
 						Popup.prodQuantErro();
-					} catch (CPFNaoEncontradoException cpfnee) {
+					}catch(CPFNaoEncontradoException cpfnee) {
 						Popup.cpfNaoEncontrado(cpfnee);
 					}
 				}else{
@@ -302,27 +347,37 @@ public class TelaGerenciaProd extends JFrame {
 				}
 			}
 		});
-		btnDistribuir.setBounds(479, 348, 89, 23);
+		btnDistribuir.setBounds(484, 348, 89, 23);
 		panel.add(btnDistribuir);
 		
 		lblQuantidade = new JLabel("Quantidade:");
 		lblQuantidade.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblQuantidade.setBounds(20, 396, 86, 21);
+		lblQuantidade.setBounds(20, 381, 86, 21);
 		panel.add(lblQuantidade);
 		lblQuantidade.setVisible(false);
 		
 		textFieldQuantidade = new JTextField();
 		textFieldQuantidade.setColumns(10);
-		textFieldQuantidade.setBounds(101, 398, 102, 20);
+		textFieldQuantidade.setBounds(101, 383, 102, 20);
 		panel.add(textFieldQuantidade);
 		textFieldQuantidade.setVisible(false);
 		
-		lblMsgSucesso = new JLabel("Produto distribuido!");
-		lblMsgSucesso.setForeground(Color.GREEN);
-		lblMsgSucesso.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblMsgSucesso.setBounds(411, 298, 162, 21);
-		panel.add(lblMsgSucesso);
-		lblMsgSucesso.setVisible(false);
+		modeloVendProd = new ModeloTabelaVendProd();
+		tableVendProd = new JTable(modeloVendProd);
+		tableVendProd.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		tableVendProd.setBounds(68, 163, 100, 30);
+		tableVendProd.setPreferredScrollableViewportSize(new Dimension(500,100));
+		tableVendProd.setFillsViewportHeight(true);
+		
+		scrollPaneVendProd = new JScrollPane(tableVendProd);
+		scrollPaneVendProd.setBounds(20, 413, 452, 138);
+		panel.add(scrollPaneVendProd);
+		scrollPaneVendProd.setVisible(false);
+		
+		btnRemoverProdVend = new JButton("Remover");
+		btnRemoverProdVend.setBounds(484, 416, 89, 23);
+		panel.add(btnRemoverProdVend);
+		btnRemoverProdVend.setVisible(false);
 		
 		JLabel lblBuscaDeProduto = new JLabel("Gerenciamento de produto");
 		lblBuscaDeProduto.setForeground(SystemColor.window);

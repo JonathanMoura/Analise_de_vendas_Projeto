@@ -1,10 +1,13 @@
 package interfaces;
 
 import entidades.Produto;
-import entidades.Vendedor;
+
+import java.sql.ResultSet;
+
+import entidades.Funcionario;
 
 public interface IRepositorioVendProd {
 
-	public void inserir(Vendedor vendedor, Produto produto);
-
+	public void inserir(Funcionario vendedor, Produto produto);
+	public ResultSet listar();
 }

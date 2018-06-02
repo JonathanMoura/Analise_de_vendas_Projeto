@@ -99,6 +99,24 @@ public class ClasseAssistente {
         }
 	}
 	
+	public static void montarTabelaProduto(ResultSet rs, ModeloTabelaVendProd modelo){
+		List produtos = new ArrayList();
+		try{	
+			while(rs.next()){
+				Produto p = new Produto();
+				p.setNome(rs.getString("nome"));
+				p.setDescricao(rs.getString("descricao"));
+				p.setQuantidade(rs.getInt("quantidade"));
+				p.setValor(rs.getDouble("valor"));
+				produtos.add(p);
+				p = null;	
+			}
+			modelo.addProdutoList(produtos);
+		}catch(SQLException sqle){
+			
+		}
+	}
+	
 	public static void montarTabelaProduto(ResultSet rs, ModeloTabelaProduto modelo){
 		List produtos = new ArrayList();
 		try{	
@@ -123,16 +141,20 @@ public class ClasseAssistente {
 		}
 	}
 	
+	//Monta o comboBox da tela de Gerenciamento de produtos.
 	public static List montaComboBox(JComboBox comboBox){
 		ResultSet vendedores;
 		String nome;
+		//Recuperr cpf do gerente logado.
 		String chave = ValidarDados.funcionario.getCpf();
 		List<String> cpf = new ArrayList();
+		//Recuperar vendedores subordinados ao gerente logado.
 		vendedores = Fachada.getInstance().listarSubordinados(chave);
 		try{
 			while(vendedores.next()){
 				nome = vendedores.getString("nome");
 				cpf.add(vendedores.getString("cpf"));
+				//Montar comboBox com os resultlados recuperados.
 				comboBox.addItem(nome);
 			}
 			return cpf;
