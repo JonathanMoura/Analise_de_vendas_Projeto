@@ -69,5 +69,13 @@ public class Produto {
 		}
 	}
 	
+	public void inserirProduto(int quantidade) throws ProdutoQuantidadeException{
+		if(quantidade > 0){
+			this.quantidade = this.quantidade + quantidade;
+		}else{
+			throw new ProdutoQuantidadeException();
+		}
+	}
+	
 }
 

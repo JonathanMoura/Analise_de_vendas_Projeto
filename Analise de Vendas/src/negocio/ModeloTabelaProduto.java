@@ -42,6 +42,10 @@ public class ModeloTabelaProduto extends AbstractTableModel {
 	public Produto getProdutoAt(int row) {
 		return dataList.get(row);
 	} 
+	
+	public int getProdutoAt(Produto produto){
+		return dataList.lastIndexOf(produto);
+	}
 
 	public Produto removeProdutoAt(int row) {
 		Produto p;

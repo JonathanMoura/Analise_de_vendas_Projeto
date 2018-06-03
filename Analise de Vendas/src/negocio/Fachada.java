@@ -85,8 +85,17 @@ public class Fachada {
 	public void cadastrar(Funcionario vendedor, Produto produto){
 		this.vendProd.inserir(vendedor,produto);
 	}
-	public ResultSet listarVendProd(){
-		return this.vendProd.listar();
+	public ResultSet listarVendProd(String cpf){
+		return this.vendProd.listar(cpf);
+	}
+	public Produto procurar(String produto_nome, String cpf){
+		return this.vendProd.procurar(produto_nome, cpf);
+	}
+	public void atualizar(Produto produto, String vendedor_cpf){
+		this.vendProd.atualizar(produto, vendedor_cpf);
+	}
+	public void remover(String produto_nome, String vendedor_cpf) {
+		this.vendProd.remover(produto_nome, vendedor_cpf);
 	}
 	//FIM CRUD de vendedor_produto
 }

@@ -260,19 +260,32 @@ public class TelaGerenciaProd extends JFrame {
 		comboBox = new JComboBox();
 		comboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String nomeVendedor = (String) comboBox.getSelectedItem();
-				//Caso a tabela esteja preenchida, ela será limpada, para receber novos resultados.
-				while(modeloVendProd.getRowCount()>0)
-					modeloVendProd.removeProdutoAt(0);
 				
-				//Listar todos os produtos do vendedor.
-					ResultSet rs;
-					//TODO método listarVendProd
-					rs = Fachada.getInstance().listarVendProd();
+				//Recupera vendedor selecionado.
+				int vendedorSelecionado = comboBox.getSelectedIndex();
+				
+				//Recupera os dados do vendedor selecionado no dropDown
+				if(cpf!=null && vendedorSelecionado!=-1){
+					String vendedorCPF = cpf.get(vendedorSelecionado);
+					try{
+					//Recupera dados do vendedor.
+					Funcionario vendedor = Fachada.getInstance().procurarFunc(vendedorCPF);
+					}catch(CPFNaoEncontradoException cpfnee){
+						
+					}
+					//Caso a tabela esteja preenchida, ela será limpada, para receber novos resultados.
+					while(modeloVendProd.getRowCount()>0)
+						modeloVendProd.removeProdutoAt(0);
 					
-					//Insere resultados da busca na tabela.
-					ClasseAssistente.montarTabelaProduto(rs, modeloVendProd);
-					
+					//Listar todos os produtos do vendedor.
+						ResultSet rs;
+						
+						rs = Fachada.getInstance().listarVendProd(vendedorCPF);
+						if(rs!=null){
+							//Insere resultados da busca na tabela.
+							ClasseAssistente.montarTabelaProduto(rs, modeloVendProd);
+						}
+				}
 			}
 		});
 		comboBox.setBounds(101, 349, 366, 21);
@@ -296,7 +309,7 @@ public class TelaGerenciaProd extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				int[] linhas = tableProdutos.getSelectedRows();
 				if(linhas.length == 1){
-					try{
+					try{						
 						int quantidade = Integer.parseInt(textFieldQuantidade.getText());
 						if(quantidade > 0){
 							int vendedorSelecionado = comboBox.getSelectedIndex();
@@ -316,12 +329,28 @@ public class TelaGerenciaProd extends JFrame {
 								Fachada.getInstance().atualizar(produto);
 								TelaEditProd.getInstance().sair();
 								
-								//Inserir o produto para o vendedor
-								produtoToVendedor.setNome(produto.getNome());
-								produtoToVendedor.setDescricao(produto.getDescricao());
-								produtoToVendedor.setQuantidade(quantidade);
-								produtoToVendedor.setValor(produto.getValor());
-								Fachada.getInstance().cadastrar(vendedor,produtoToVendedor);
+								//Verificar se o vendedor já possui o produto
+								produtoToVendedor = Fachada.getInstance().procurar(produto.getNome(), vendedorCPF);
+								if(produtoToVendedor != null){
+									
+									//Recupera a posicao do produto na tabela
+									int posicao = modeloVendProd.getProdutoAt(produtoToVendedor);
+									
+									//Remove o produto na tabela 
+									modeloVendProd.removeProdutoAt(posicao);
+									
+									//Atualizar o produto no repositorio
+									produtoToVendedor.inserirProduto(quantidade);
+									Fachada.getInstance().atualizar(produtoToVendedor, vendedorCPF);
+								}else{
+									//Inserir o produto para o vendedor
+									produtoToVendedor.setNome(produto.getNome());
+									produtoToVendedor.setDescricao(produto.getDescricao());
+									produtoToVendedor.setQuantidade(quantidade);
+									produtoToVendedor.setValor(produto.getValor());
+									
+									Fachada.getInstance().cadastrar(vendedor,produtoToVendedor);
+								}
 								
 								//Atualizar tabelas 
 								modeloVendProd.addProduto(produtoToVendedor);
@@ -364,7 +393,7 @@ public class TelaGerenciaProd extends JFrame {
 		
 		modeloVendProd = new ModeloTabelaVendProd();
 		tableVendProd = new JTable(modeloVendProd);
-		tableVendProd.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		tableVendProd.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		tableVendProd.setBounds(68, 163, 100, 30);
 		tableVendProd.setPreferredScrollableViewportSize(new Dimension(500,100));
 		tableVendProd.setFillsViewportHeight(true);
@@ -375,6 +404,67 @@ public class TelaGerenciaProd extends JFrame {
 		scrollPaneVendProd.setVisible(false);
 		
 		btnRemoverProdVend = new JButton("Remover");
+		btnRemoverProdVend.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int[] linhas = tableVendProd.getSelectedRows(); 
+				if(linhas.length==1){
+					try{
+						int quantidade = Integer.parseInt(textFieldQuantidade.getText());
+						if(quantidade > 0){							
+							int vendedorSelecionado = comboBox.getSelectedIndex();
+							if(vendedorSelecionado!=-1){
+
+								//Recuperar o cpf do vendedor selecionado
+								String vendedorCPF = cpf.get(vendedorSelecionado);
+								
+								//Retirar da tabela a quantidade de produto selecionado
+								Produto produtoToVendedor = modeloVendProd.removeProdutoAt(linhas[0]);
+								produtoToVendedor.retirarProduto(quantidade);
+								
+								if(produtoToVendedor.getQuantidade() == 0){
+									
+									//Remover produto do BD Vendedor_produto 
+									Fachada.getInstance().remover(produtoToVendedor.getNome(), vendedorCPF);
+								}else{
+																		
+									//Atualizar Repositório do produto de vendedor
+									Fachada.getInstance().atualizar(produtoToVendedor, vendedorCPF);
+									
+									//Atualizar tabela 
+									modeloVendProd.addProduto(produtoToVendedor);
+						
+								}
+								//Buscar produto no Repositório de Produtos 
+								Produto produtoNoRepositorio = Fachada.getInstance().procurarProd(produtoToVendedor.getNome());
+								
+								//Recuperar a posição do produto na tabela 
+								int indice = modelo.getProdutoAt(produtoNoRepositorio);
+								
+								//Inserir quantidade do produto retirado do vendedor
+								produtoNoRepositorio.inserirProduto(quantidade);
+								
+								//Atualizar repositorio de produtos
+								Fachada.getInstance().atualizar(produtoNoRepositorio);
+								
+								//Atualizar tabela 
+								modelo.removeProdutoAt(indice);
+								modelo.addProduto(produtoNoRepositorio);
+								
+								textFieldQuantidade.setText("");
+							}							
+						}else{
+							Popup.quantProd();
+						}
+					}catch(NumberFormatException nfe){
+						Popup.quantProd();
+					} catch (ProdutoQuantidadeException e) {
+						Popup.prodQuantErro();
+					}
+				}else{
+					Popup.select1Row();
+				}
+			}
+		});
 		btnRemoverProdVend.setBounds(484, 416, 89, 23);
 		panel.add(btnRemoverProdVend);
 		btnRemoverProdVend.setVisible(false);

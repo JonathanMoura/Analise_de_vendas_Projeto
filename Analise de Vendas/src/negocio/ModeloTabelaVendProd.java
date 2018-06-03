@@ -42,6 +42,17 @@ public class ModeloTabelaVendProd extends AbstractTableModel {
 	public Produto getProdutoAt(int row) {
 		return dataList.get(row);
 	} 
+	
+	public int getProdutoAt(Produto produto){
+		Produto produtoTabela;
+		for(int i = 0; i < dataList.size(); i++){
+			produtoTabela = dataList.get(i);
+			if(produto.getNome().equals(produtoTabela.getNome())){
+				return i;
+			}
+		}
+		return -1;
+	}
 
 	public Produto removeProdutoAt(int row) {
 		Produto p;

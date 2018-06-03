@@ -104,7 +104,7 @@ public class ClasseAssistente {
 		try{	
 			while(rs.next()){
 				Produto p = new Produto();
-				p.setNome(rs.getString("nome"));
+				p.setNome(rs.getString("produto_nome"));
 				p.setDescricao(rs.getString("descricao"));
 				p.setQuantidade(rs.getInt("quantidade"));
 				p.setValor(rs.getDouble("valor"));
@@ -145,11 +145,18 @@ public class ClasseAssistente {
 	public static List montaComboBox(JComboBox comboBox){
 		ResultSet vendedores;
 		String nome;
+		
 		//Recuperr cpf do gerente logado.
-		String chave = ValidarDados.funcionario.getCpf();
+		String gerenteCPF = ValidarDados.funcionario.getCpf();
 		List<String> cpf = new ArrayList();
+		
 		//Recuperar vendedores subordinados ao gerente logado.
-		vendedores = Fachada.getInstance().listarSubordinados(chave);
+		vendedores = Fachada.getInstance().listarSubordinados(gerenteCPF);
+		
+		//Adicionar linha em branco no comboBox.
+		nome = "";
+		cpf.add("");
+		comboBox.addItem(nome);
 		try{
 			while(vendedores.next()){
 				nome = vendedores.getString("nome");
